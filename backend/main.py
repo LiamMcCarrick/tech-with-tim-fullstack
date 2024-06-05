@@ -7,10 +7,8 @@ from config import app, db
 from models import Contact
 
 # get (method) context
-# decorater  
-@app.route("/contacts",methods=["GET"])
-
 # handle GET request that gets sent to /contacts route (URL)
+@app.route("/contacts",methods=["GET"])
 def get_contacts():
 
     # get all contacts in Contact table
@@ -23,8 +21,9 @@ def get_contacts():
     return jsonify({"contacts": json_contacts})
 
 # handle POST request that creates contacts
-@app.route("/creat_contact",methods=["POST"])
+@app.route("/create_contact",methods=["POST"])
 def create_contact():
+
     # get data associated with contact we want to create
     first_name = request.json.get("firstName")
     last_name = request.json.get("lastName")
@@ -43,10 +42,33 @@ def create_contact():
         db.session.commit()
     # return error if doesn't work
     except Exception as e:
-        return (jsonify({"message":str(e)}),400)
+        return (jsonify({"message":str(e)}), 400)
     
     # return message that contact was created successfully
-    return (jsonify({"message":"User created"}),201)
+    return (jsonify({"message":"User created"}), 201)
+
+# handle request that will update a contact
+@app.route("/update_contact/<int:user_id>",methods=["PATCH"])
+def update_contact(user_id):
+
+    # look in database and find user_id you want to update
+    contact = Contact.query.get(user_id)
+
+    # if user doesn't exist return user not found error
+    if not contact:
+        return (jsonify({"message":"User not found"}), 404)
+    
+    # modify contact variable to either update or keep data given from json data
+    data = request.json
+    contact.first_name = data.get("firstName", contact.first_name)
+    contact.last_name = data.get("lastName", contact.last_name)
+    contact.email = data.get("email",contact.email)
+
+    # commit change to database
+    db.session.commit()
+
+    # return message that contact was updated
+    return (jsonify({"message":"User updated"}), 200)
 
 # run flask application
 # handles running file directly so it doesn't run when imported
