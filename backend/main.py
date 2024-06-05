@@ -70,6 +70,24 @@ def update_contact(user_id):
     # return message that contact was updated
     return (jsonify({"message":"User updated"}), 200)
 
+# handle request that will delete contact
+@app.route("/delete_contact/<user_id>",methods=["DELETE"])
+def delete_contact(user_id):
+
+    # look in database and find user_id you want to update
+    contact = Contact.query.get(user_id)
+
+    # if user doesn't exist return user not found error
+    if not contact:
+        return (jsonify({"message":"User not found"}), 404)
+    
+    # delete contact from database
+    db.session.delete(contact)
+    db.session.commit()
+
+    # return message that contact was deleted
+    return (jsonify({"message":"User deleted"}), 200)
+
 # run flask application
 # handles running file directly so it doesn't run when imported
 if __name__ == "__main__":
