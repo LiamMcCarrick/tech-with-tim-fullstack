@@ -22,6 +22,32 @@ def get_contacts():
     # return json data
     return jsonify({"contacts": json_contacts})
 
+# handle POST request that creates contacts
+@app.route("/creat_contact",methods=["POST"])
+def create_contact():
+    # get data associated with contact we want to create
+    first_name = request.json.get("firstName")
+    last_name = request.json.get("lastName")
+    email = request.json.get("email")
+
+    # handle when data for contact isn't given
+    if not first_name or not last_name or not email:
+        return (jsonify({"message":"You must include first and last name and email"}), 400) # error code for bad request
+    
+    # create new contact object
+    new_contact = Contact(first_name=first_name, last_name=last_name,email=email)
+
+    # add to database
+    try:
+        db.session.add(new_contact)
+        db.session.commit()
+    # return error if doesn't work
+    except Exception as e:
+        return (jsonify({"message":str(e)}),400)
+    
+    # return message that contact was created successfully
+    return (jsonify({"message":"User created"}),201)
+
 # run flask application
 # handles running file directly so it doesn't run when imported
 if __name__ == "__main__":
