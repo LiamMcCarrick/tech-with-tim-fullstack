@@ -19,11 +19,11 @@ const ContactForm = () => {
             email
         }
         // url for page
-        const url = "http://127.0.0.1/5000/create_contact"
+        const url = "http://127.0.0.1:5000/create_contact"
         // options for http request
         const options = {
             method: "POST",
-            header: {
+            headers: {
                 "Content-Type": "application/json"
             },
             // turn data javascript object to json data
