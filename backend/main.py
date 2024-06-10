@@ -31,7 +31,7 @@ def create_contact():
 
     # handle when data for contact isn't given
     if not first_name or not last_name or not email:
-        return (jsonify({"message":"You must include first and last name and email"}), 400) # error code for bad request
+        return (jsonify({"message":"You must include first and last name and email"}), 400,) # error code for bad request
     
     # create new contact object
     new_contact = Contact(first_name=first_name, last_name=last_name,email=email)

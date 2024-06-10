@@ -7,7 +7,7 @@ function App() {
   /*Set up state to store contacts*/
   const [contacts, setContacts] = useState([])
 
-  /*Render once when function is called*/
+  /*Render once function is called*/
   useEffect(() => {
     fetchContacts()
   }, [])
