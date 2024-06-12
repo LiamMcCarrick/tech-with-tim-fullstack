@@ -8,6 +8,8 @@ function App() {
   const [contacts, setContacts] = useState([])
   // set modal (detach form) to start as false
   const [isModalOpen, setIsModalOpen] = useState(false)
+  // store contact we are currently editing
+  const [currentContact, setCurrentContact] = useState({})
 
   /*Render once function is called*/
   useEffect(() => {
@@ -26,6 +28,8 @@ function App() {
   // toggle modal
   const closeModal = () => {
     setIsModalOpen(false)
+    // reset modal
+    setCurrentContact({})
   }
 
   // open modal when creating contact
@@ -33,15 +37,28 @@ function App() {
     if (!isModalOpen) setIsModalOpen(true)
   }
 
+  // open modal when updating contact
+  const openEditModal = (contact) => {
+    if (isModalOpen) return
+    setCurrentContact(contact)
+    setIsModalOpen(true)
+  }
+
+  // close modal and get updated contacts after update is performed
+  const onUpdate = () => {
+    closeModal()
+    fetchContacts()
+  }
+
   // create fragment to render contact form
   return (
     <>
-      <ContactList contacts={contacts} />
+      <ContactList contacts={contacts} updateContact={openEditModal} updateCallback={onUpdate} />
       <button onClick={openCreateModal}>Create New Contact</button>
       {isModalOpen && <div className="modal">
         <div className="modal-content">
           <span className="close" onClick={closeModal}>&times;</span>
-          <ContactForm />
+          <ContactForm existingContact={currentContact} updateCallback={onUpdate} />
         </div>
       </div>
 

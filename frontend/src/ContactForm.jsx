@@ -1,11 +1,15 @@
 // create form to add contacts
 import { useState } from "react"
 
-const ContactForm = () => {
+const ContactForm = ({ existingContact = {}, updateCallback }) => {
     //set state of contacts we want to store
-    const [firstName, setFirstName] = useState("")
-    const [lastName, setLastName] = useState("")
-    const [email, setEmail] = useState("")
+    // if we have contact we input the contact data otherwise keep empty string
+    const [firstName, setFirstName] = useState(existingContact.firstName || "")
+    const [lastName, setLastName] = useState(existingContact.lastName || "")
+    const [email, setEmail] = useState(existingContact.email || "")
+
+    // if object passed has at least 1 entry we're updating otherwise we're creating
+    const updating = Object.entries(existingContact).length !== 0
 
     // add contact to db when button is clicked
     const onSubmit = async (e) => {
@@ -19,10 +23,11 @@ const ContactForm = () => {
             email
         }
         // url for page
-        const url = "http://127.0.0.1:5000/create_contact"
+        // if updating contact then go to update page with contact id otherwise go to create contact
+        const url = "http://127.0.0.1:5000/" + (updating ? `update_contact/${existingContact.id}` : "create_contact")
         // options for http request
         const options = {
-            method: "POST",
+            method: updating ? "PATCH" : "POST",
             headers: {
                 "Content-Type": "application/json"
             },
@@ -37,7 +42,8 @@ const ContactForm = () => {
             const data = await response.json()
             alert(data.message)
         } else {
-
+            // close modal if update/create operation is completed
+            updateCallback()
         }
     }
 
@@ -67,7 +73,7 @@ const ContactForm = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)} />
         </div>
-        <button type="submit">Create Contact</button>
+        <button type="submit">{updating ? "Update Contact" : "Create Contact"}</button>
     </form>
     )
 }
