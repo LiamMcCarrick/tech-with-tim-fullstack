@@ -39,9 +39,10 @@ function App() {
       <ContactList contacts={contacts} />
       <button onClick={openCreateModal}>Create New Contact</button>
       {isModalOpen && <div className="modal">
-        <div className="modal-content"></div>
-        <span className="close" onClick={closeModal}>&times;</span>
-        <ContactForm />
+        <div className="modal-content">
+          <span className="close" onClick={closeModal}>&times;</span>
+          <ContactForm />
+        </div>
       </div>
 
       }
